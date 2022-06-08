@@ -1,0 +1,59 @@
+{% load static %}
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>DatLien - Xwrap | {% block 'title' %}{% endblock %}</title>
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+    <link rel="shortcut icon" href="{% static 'static/datlien-logo.svg' %}" type="image/x-icon">
+    <link href="{% static 'css/tabler.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/tabler-flags.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/tabler-payments.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/tabler-vendors.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/demo.min.css' %}" rel="stylesheet"/>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+  </head>
+  
+  {% block 'header' %}
+  {% endblock %}
+  
+  <body class="antialiased border-top-wide border-primary d-flex flex-column">
+    {% block 'body' %}
+    {% endblock %}
+    <!-- Libs JS -->
+    <!-- Tabler Core -->
+    <script src="{% static 'js/tabler.min.js' %}"></script>
+  </body>
+
+  <footer class="footer footer-transparent d-print-none">
+    <div class="container">
+      <div class="row text-center align-items-center flex-row-reverse">
+        <div class="col-lg-auto ms-lg-auto">
+          <ul class="list-inline list-inline-dots mb-0">
+            <li class="list-inline-item"><a href="#" class="link-secondary">About Us</a></li>
+            <li class="list-inline-item"><a href="#" class="link-secondary">Contact Us</a></li>
+            <li class="list-inline-item"><a href="#" target="_blank" class="link-secondary" rel="noopener">Happy Customers😎</a></li>
+          </ul>
+        </div>
+        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+          <ul class="list-inline list-inline-dots mb-0">
+            <li class="list-inline-item">
+              Copyright &copy; 2021
+              <a href="." class="link-secondary">DatLien - Xwrap</a>.
+              All rights reserved.
+            </li>
+            <li class="list-inline-item">
+              <a href="#" class="link-secondary" rel="noopener">v10.2.1</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+</html>

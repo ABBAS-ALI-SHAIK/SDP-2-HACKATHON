@@ -1,0 +1,64 @@
+{% extends "datlien/layout.html" %}
+{% block 'body' %}
+
+{% load widget_tweaks %}
+<div class="m-2">
+    <a class="btn btn-outline-success" href="{% url 'addHub' %}"> <i class="fa fa-plus"></i> <span class="h6">Hub</span></a>
+</div>
+<div class="m-2">
+    {% if hubs %}
+        <b>Total Hubs:</b> {{hubs.count}}
+    {% endif %}
+</div>
+<!-- <div class="m-2">
+    {% for hub in hubs %}
+    <div class="col-3 m-2">
+        <div class="card">
+            <div class="card-header text-center">
+                {{hub.city}}
+            </div>
+            <div class="card-content m-2">
+                <p>{{hub.central_hub}}</p>
+                <p>{{hub.address}}</p>
+            </div>
+            <div class="card-footer text-center">
+                <a href="{% url 'editHub' hub.username %}"> <i class="fa fa-edit"></i> </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div> -->
+<div class="m-2">
+    <h3 class="text-center">Hubs</h3>
+    <table class="table table-striped">
+        <thead>
+            <th scope="col">Established On</th>
+            <th scope="col">Hub Id</th>
+            <th scope="col">Central Hub</th>
+            <th scope="col">City</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Actions</th>
+            <th scope="col">History</th>
+        </thead>
+        <tbody>
+            {% for hub in hubs %}
+            <tr>
+                <td>{{hub.date}}</td>
+                <td>{{hub.id}}</td>
+                <td>{{hub.central_hub}}</td>
+                <td>{{hub.city}}</td>
+                <td>{{hub.username}}</td>
+                <td>{{hub.email}}</td>
+                <td>
+                    <a href="{% url 'editHub' hub.username %}"> <i class="fa fa-edit"></i> </a>
+                </td>
+                <td>
+                    <a href="{% url 'hub_history' hub.id %}"> <i class="fas fa-eye"></i> </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

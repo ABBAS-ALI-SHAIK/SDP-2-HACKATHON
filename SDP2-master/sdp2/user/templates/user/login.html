@@ -1,0 +1,48 @@
+{% extends "user/base.html" %}
+
+{% load widget_tweaks %}
+{% block 'title' %}
+Sign In
+{% endblock %}
+
+{% block 'body' %}
+
+<div class="page page-center">
+    <div class="container-tight py-4">
+        <div class="text-center mb-4">
+            <h1>DatLien - Xwrap</h1>
+        </div>
+        <form class="card card-md" method="POST">
+            {% csrf_token %}
+            <div class="card-body">
+            <h2 class="card-title text-center mb-2" style="font-size: large;">Login to your account</h2>
+            {% if message %}
+            <div class="text-center form-label invalid-feedback" style="font-size: medium;">
+                <b>{{ message }}</b>
+            </div>
+            {% endif %}
+            {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label">{{ field.label_tag }}</label>
+                {% render_field field class="form-control" %}
+            </div>
+            {% endfor %}
+            <div class="mb-2">
+                <label class="form-check">
+                <span class="form-label-description"><a href="{% url 'userregister' %}">Sign Up</a></span>
+                </label>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary w-100">Sign in</button>
+            </div>
+            <div class="mt-3">
+                <label class="form-check">
+                  <span class="form-label-description"><a href="{% url 'home' %}">Admin</a></span>
+                </label>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

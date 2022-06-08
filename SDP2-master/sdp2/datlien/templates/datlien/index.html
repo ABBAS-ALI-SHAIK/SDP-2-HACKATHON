@@ -1,0 +1,506 @@
+{% extends "datlien/base.html" %}
+{% load static %}
+
+{% block 'header' %}
+<header class="navbar navbar-expand-md navbar-light d-print-none">
+    <div class="container-xl">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-nav flex-row order-md-last">
+        <div class="nav-item dropdown">
+          <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+            <span class="avatar avatar-sm" style="background-image: url(../../../static/static/avatars/000m.jpg)"></span>
+            <div class="d-none d-xl-block ps-2">
+              <div>{{username}}</div>
+              <div class="mt-1 small text-muted">{% if superuser %}SuperUser{% else %}Staff{% endif %}</div>
+            </div>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+            <a href="{% url 'logout' %}" class="dropdown-item">Logout</a>
+          </div>
+        </div>
+      </div>
+      <div class="collapse navbar-collapse" id="navbar-menu">
+        <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'home' %}" >
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
+                </span>
+                <span class="nav-link-title">
+                  Home
+                </span>
+              </a>
+            </li>
+            {% if superuser %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'viewStates' %}">Locations</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'viewCentralHubs' %}">Central Hubs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'users' %}">Users</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'orders_history' %}">Order History</a>
+              </li>
+            {% endif %}
+            {% if is_c_hub  %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'prequest' %}">Pending Requests</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'porders' %}">Pending Orders</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'corders' %}">Completed Orders</a>
+              </li>
+            {% endif %}
+            {% if is_hub %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'prequest' %}">Pending Requests</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'porders' %}">Pending Orders</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'corders' %}">Completed Orders</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+</header>
+
+{% endblock %}
+
+{% block 'body' %}
+{% if superuser %}
+
+<div class="page-body">
+   <div class="container-xl">
+      <div class="row row-cards">
+          <div class="col-md-6 col-xl-4">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="row align-items-center">
+                    <div class="col-auto">
+                      <span class="bg-blue text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2" /><path d="M12 3v3m0 12v3" /></svg>
+                      </span>
+                    </div>
+                    <div class="col">
+                      <div class="font-weight-medium">
+                        ₹ {{total_fare.total_amount__sum}}/- Total Revenue
+                      </div>
+                      <div class="text-muted">
+                        {{p_deliveries_count}} Awaiting Deliveries
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-4">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="row align-items-center">
+                    <div class="col-auto">
+                      <span class="bg-green text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="6" cy="19" r="2" /><circle cx="17" cy="19" r="2" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
+                      </span>
+                    </div>
+                    <div class="col">
+                      <div class="font-weight-medium">
+                        {{total_no_orders}} Orders
+                      </div>
+                      <div class="text-muted">
+                        {{c_orders_count}} Completed Orders
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-4">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="row align-items-center">
+                    <div class="col-auto">
+                      <span class="bg-red text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="7" r="4" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></svg>
+                      </span>
+                    </div>
+                    <div class="col">
+                      <div class="font-weight-medium">
+                        {{user_count}} Happy Customers
+                      </div>
+                      <div class="text-muted">
+                        {{no_of_hubs}} No.of Hubs
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+      </div>
+   </div>
+
+   <div class="container">
+     <div class="row">
+       <div class="col-4">
+        <canvas id="myChart" width="400" height="400"></canvas>
+        <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var hub_count = {{no_of_hubs}}
+        var user_count = {{user_count}}
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Hubs','Customers'],
+                datasets: [{
+                    label: 'Hubs - Customers',
+                    data: [ hub_count,user_count ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        </script>
+       </div>
+       <div class="col-4">
+        <canvas id="myChart1" width="400" height="400"></canvas>
+        <script>
+        var ctx = document.getElementById('myChart1').getContext('2d');
+        var orders_count = {{total_no_orders}}
+        var c_orders_count = {{c_orders_count}}
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Total Orders','Completed Orders'],
+                datasets: [{
+                    data: [ orders_count,c_orders_count ],
+                    backgroundColor: [
+                        '#1de9b6  ',
+                        '#c5e1a5 ',
+                    ],
+                    borderColor: [
+                        '#1de9b6  ',
+                        '#c5e1a5 ',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+        });
+        </script>
+       </div>
+       <div class="col-4">
+        <canvas id="myChart2" width="400" height="400"></canvas>
+        <script>
+        var ctx = document.getElementById('myChart2').getContext('2d');
+        var Pending = {{pending}}
+        var Approved = {{approved}}
+        var Picked = {{picked}}
+        var Shipped = {{shipped}}
+        var Transit = {{transit}}
+        var Received = {{received}}
+        var Out_for_Delivery = {{out_for_delivery}}
+        var Delivered = {{delivered}}
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pending','Approved','Picked','Shipped','Transit','Received','Out_for_Delivery','Delivered'],
+                datasets: [{
+                    data: [ Pending,Approved,Picked,Shipped,Transit,Received,Out_for_Delivery,Delivered ],
+                    backgroundColor: [
+                        '#757575 ',
+                        '#f9a825 ',
+                        '#c6ff00 ',
+                        '#84ffff ',
+                        '#7e57c2 ',
+                        '#e57373 ',
+                        '#e1bee7 ',
+                        '#006064',
+                        '#004d40',
+                        '#1b5e20',
+                        '#33691e',
+                    ],
+                    borderColor: [
+                        '#757575 ',
+                        '#f9a825 ',
+                        '#c6ff00 ',
+                        '#84ffff ',
+                        '#7e57c2 ',
+                        '#e57373 ',
+                        '#e1bee7 ',
+                        '#006064',
+                        '#004d40',
+                        '#1b5e20',
+                        '#33691e',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+            },
+        });
+        </script>
+       </div>
+     </div>
+   </div>
+{% endif %}
+{% if is_c_hub %}
+<div class="container mt-2 mb-2">
+    <b>City:</b> {{c_hub.city.city}}
+    <br> 
+    <b>Central Hub Of:</b> {{c_hub.state}}
+</div>
+
+<div class="container mt-2 mb-2">
+    <a class="btn btn-success" href="{% url 'addHub' %}"> <i class="fa fa-plus"></i>&nbsp;Hub</a>
+</div>
+
+<div class="container mb-2">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Hubs</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="table card-table table-vcenter text-nowrap datatable">
+          <thead>
+            <tr>
+              <th>Established On</th>
+              <th>Hub Id</th>
+              <th>Central Hub</th>
+              <th>City</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Actions</th>
+              <th>History</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for hub in hubs %}
+            <tr>
+              <td>{{hub.created_on}}</td>
+              <td>{{hub.id}}</td>
+              <td>{{hub.central_hub}}</td>
+              <td>{{hub.city.city}}</td>
+              <td>{{hub.username}}</td>
+              <td>{{hub.email}}</td>
+              <td>
+                  <a href="{% url 'editHub' hub.username %}"> <i class="fa fa-edit"></i> </a>
+              </td>
+              <td>
+                  <a href="{% url 'hub_history' hub.id %}"> <i class="fas fa-eye"></i> </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if is_hub %}
+<div class="container mt-3 mb-3">
+    <b>Hub:</b> {{hub.city.city}}
+    <br> 
+    <b>State:</b>&nbsp;{{hub.central_hub.state}} - <b>Central Hub:</b> {{hub.central_hub.city.city}}
+</div>
+
+<div class="container mt-3 mb-3">
+  <a class="btn btn-success btn-md" href="{% url 'addDeliveryBoy' hub.id %}"> <i class="fa fa-plus"></i>&nbsp;DeliveryBoy </a>
+</div>
+
+<div class="container mb-2">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Delivery Boys</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="table card-table table-vcenter text-nowrap datatable">
+          <thead>
+            <tr>
+              <th>Joined On</th>
+              <th>DeliveryBoy Id</th>
+              <th>Name</th>
+              <th>Username</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for deliveryboy in deliveryboys %}
+            <tr>
+              <td>{{deliveryboy.created_on}}</td>
+              <td>{{deliveryboy.id}}</td>
+              <td>{{deliveryboy.first_name}} {{deliveryboy.last_name}}</td>
+              <td>{{deliveryboy.username}}</td>
+              <td>{{deliveryboy.email}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="col-12 mt-3 mb-3">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">History</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="table card-table table-vcenter text-nowrap datatable">
+          <thead>
+            <tr>
+              <th>Placed On</th>
+              <th>Order Id</th>
+              <th>User</th>
+              <th>Source</th>
+              <th>Destination</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for delivery in history %}
+            <tr>
+                <td>{{delivery.created_on}}</td>
+                <td>{{delivery.id}}</td>
+                <td>{{delivery.user}}</td>
+                <td>{{delivery.source}}</td>
+                <td>{{delivery.destination}}</td>
+                <td>
+                  {% if not delivery.is_approved %}
+                  <span class="badge bg-warning me-1">Pending</span>
+                  {% elif not delivery.is_picked %}
+                  <span class="badge bg-success me-1">Approved</span>
+                  {% elif not delivery.is_shipped %}
+                  <span class="badge bg-accent me-1">Picked</span>
+                  {% elif not delivery.is_transit %}
+                  <span class="badge bg-info me-1">Shipped</span>
+                  {% elif not delivery.is_received %}
+                  <span class="badge bg-warning me-1">On its Way to Destination</span> 
+                  {% elif not delivery.out_for_delivery %}
+                  <span class="badge bg-info me-1">Received</span>
+                  {% elif not delivery.is_delivered %}
+                  <span class="badge bg-info me-1">Out for Delivery</span>
+                  {% else %}
+                  <span class="badge bg-success me-1">Delivered</span>
+                  {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if is_deliveryboy %}
+<div class="container">
+  <div class="col-12 mt-3 mb-3">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Pending Orders</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="table card-table table-vcenter text-nowrap datatable">
+          <thead>
+            <tr>
+              <th>Placed On</th>
+              <th>Order Id</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Contact No.</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for delivery in p_orders %}
+            <tr>
+                <td>{{delivery.delivery.created_on}}</td>
+                <td>{{delivery.delivery.id}}</td>
+                <td>{{delivery.delivery.destination_person}}</td>
+                <td>{{delivery.delivery.destination_address}}</td>
+                <td>{{delivery.delivery.destination_contact}}</td>
+                <td>
+                  <a class="btn btn-success btn-md" href="{% url 'deliver' delivery.delivery.id %}"> Delivered </a>
+                </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="col-12 mt-3 mb-3">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Completed Orders</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="table card-table table-vcenter text-nowrap datatable">
+          <thead>
+            <tr>
+              <th>Placed On</th>
+              <th>Order Id</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Contact No.</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for delivery in c_orders %}
+            <tr>
+                <td>{{delivery.delivery.created_on}}</td>
+                <td>{{delivery.delivery.id}}</td>
+                <td>{{delivery.delivery.destination_person}}</td>
+                <td>{{delivery.delivery.destination_address}}</td>
+                <td>{{delivery.delivery.destination_contact}}</td>
+                <td>
+                  Delivered
+                </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+{% endblock %}
